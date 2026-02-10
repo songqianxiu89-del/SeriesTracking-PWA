@@ -17,23 +17,34 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@Lovable" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <!-- Web App Manifest Link -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <!-- 添加到主屏幕时的图标 -->
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <!-- 全屏模式 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Your App Name">
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- Service Worker Registration -->
     <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then((registration) => {
-          console.log('Service Worker 注册成功，scope:', registration.scope);
-        })
-        .catch((error) => {
-          console.log('Service Worker 注册失败：', error);
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+              console.log('Service Worker 注册成功，scope:', registration.scope);
+            })
+            .catch((error) => {
+              console.log('Service Worker 注册失败：', error);
+            });
         });
-    });
-  }
-</script>
+      }
+    </script>
   </body>
 </html>
