@@ -24,10 +24,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <header className="sticky top-0 z-30 border-b bg-background/80 glass-header safe-area-pt">
         <div className="flex h-12 items-center justify-between px-4">
-          <h1 className="text-lg font-bold text-foreground">追剧记录</h1>
-          <Button size="icon" variant="ghost" onClick={() => setAddOpen(true)}>
+          <h1 className="text-lg font-bold tracking-tight text-foreground">追剧记录</h1>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => setAddOpen(true)}
+            className="press-effect rounded-full"
+          >
             <Plus className="h-5 w-5" />
           </Button>
         </div>
@@ -35,17 +40,17 @@ const Index = () => {
 
       <main className="mx-auto max-w-lg space-y-6 p-4">
         {/* Watching */}
-        <section>
-          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+        <section className="animate-fade-in-up">
+          <h2 className="mb-3 flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-widest">
             正在看
-            <Badge variant="secondary" className="text-xs">{watching.length}</Badge>
+            <Badge variant="secondary" className="text-xs font-medium">{watching.length}</Badge>
           </h2>
           {watching.length === 0 ? (
-            <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
+            <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
               还没有正在追的剧，点击右上角 + 添加
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2 stagger-children">
               {watching.map(show => (
                 <ShowCard key={show.id} show={show} />
               ))}
@@ -55,26 +60,28 @@ const Index = () => {
 
         {/* Finished */}
         {finished.length > 0 && (
-          <section>
+          <section className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
             <button
               onClick={() => setFinishedOpen(!finishedOpen)}
-              className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wide"
+              className="mb-3 flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-widest press-effect"
             >
-              {finishedOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              <span className="transition-transform duration-200" style={{ transform: finishedOpen ? 'rotate(0deg)' : 'rotate(-90deg)' }}>
+                <ChevronDown className="h-4 w-4" />
+              </span>
               已追完
-              <Badge variant="secondary" className="text-xs">{finished.length}</Badge>
+              <Badge variant="secondary" className="text-xs font-medium">{finished.length}</Badge>
             </button>
             {finishedOpen && (
-              <div className="space-y-2">
+              <div className="space-y-2 stagger-children">
                 {finished.map(show => (
                   <div
                     key={show.id}
                     onClick={() => window.location.href = `/show/${show.id}`}
-                    className="flex cursor-pointer items-center justify-between rounded-lg border bg-card p-3 transition-colors active:bg-accent/50"
+                    className="flex cursor-pointer items-center justify-between rounded-xl border bg-card p-3 transition-all duration-200 press-effect"
                   >
                     <div className="flex items-center gap-3">
                       {show.coverImage ? (
-                        <img src={show.coverImage} alt={show.name} className="h-10 w-7 rounded object-cover" />
+                        <img src={show.coverImage} alt={show.name} className="h-10 w-7 rounded-md object-cover" />
                       ) : null}
                       <div>
                         <p className="font-medium text-card-foreground">{show.name}</p>
