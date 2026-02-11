@@ -141,15 +141,17 @@ export default function ShowDetail() {
   return (
     <div className="min-h-screen bg-background pb-8">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b bg-background/80 glass-header safe-area-pt">
         <div className="flex h-12 items-center gap-2 px-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="press-effect rounded-full">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="flex-1 truncate font-bold text-foreground">{show.name}</h1>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button>
+              <Button variant="ghost" size="icon" className="press-effect rounded-full">
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -167,28 +169,28 @@ export default function ShowDetail() {
 
       <main className="mx-auto max-w-lg space-y-4 p-4">
         {/* Info Card */}
-        <Card>
+        <Card className="animate-fade-in-up overflow-hidden rounded-xl">
           <CardContent className="flex gap-4 p-4">
             {show.coverImage ? (
-              <img src={show.coverImage} alt={show.name} className="h-28 w-20 rounded-lg object-cover" />
+              <img src={show.coverImage} alt={show.name} className="h-28 w-20 rounded-xl object-cover shadow-sm" />
             ) : (
-              <div className="flex h-28 w-20 items-center justify-center rounded-lg bg-muted text-muted-foreground text-xs">无封面</div>
+              <div className="flex h-28 w-20 items-center justify-center rounded-xl bg-muted text-muted-foreground text-xs">无封面</div>
             )}
-            <div className="flex-1 space-y-1.5">
+            <div className="flex-1 space-y-2">
               <h2 className="text-lg font-bold text-card-foreground">{show.name}</h2>
               <p className="text-sm text-muted-foreground">{show.type} · {show.platform}</p>
-              <Badge variant={show.status === 'watching' ? 'default' : 'secondary'}>
+              <Badge variant={show.status === 'watching' ? 'default' : 'secondary'} className="text-xs">
                 {show.status === 'watching' ? '正在看' : '已追完'}
               </Badge>
               <div className="flex flex-wrap gap-1 pt-1">
-                {show.tags.map(t => <Badge key={t} variant="outline" className="text-xs">{t}</Badge>)}
+                {show.tags.map(t => <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>)}
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Progress Card */}
-        <Card>
+        <Card className="animate-fade-in-up rounded-xl" style={{ animationDelay: '50ms' }}>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">当前进度</CardTitle>
           </CardHeader>
@@ -197,13 +199,18 @@ export default function ShowDetail() {
               S{show.currentSeason}E{show.currentEpisode}
               {show.totalEpisodes > 0 && <span className="text-sm font-normal text-muted-foreground"> / {show.totalEpisodes}集</span>}
             </div>
-            {show.totalEpisodes > 0 && <Progress value={progressPercent} className="h-2" />}
+            {show.totalEpisodes > 0 && (
+              <div className="space-y-1">
+                <Progress value={progressPercent} className="h-2" />
+                <p className="text-right text-xs text-muted-foreground">{progressPercent}%</p>
+              </div>
+            )}
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { setNewSeason(String(show.currentSeason)); setNewEpisode(String(show.currentEpisode)); setProgressDialog(true); }}>
+              <Button size="sm" variant="outline" className="press-effect" onClick={() => { setNewSeason(String(show.currentSeason)); setNewEpisode(String(show.currentEpisode)); setProgressDialog(true); }}>
                 <Edit className="mr-1 h-3 w-3" /> 更新进度
               </Button>
               {show.status === 'watching' && (
-                <Button size="sm" variant="secondary" onClick={handleMarkFinished}>
+                <Button size="sm" variant="secondary" className="press-effect" onClick={handleMarkFinished}>
                   <CheckCircle className="mr-1 h-3 w-3" /> 标记已追完
                 </Button>
               )}
@@ -212,22 +219,22 @@ export default function ShowDetail() {
         </Card>
 
         {/* Notes */}
-        <Card>
+        <Card className="animate-fade-in-up rounded-xl" style={{ animationDelay: '100ms' }}>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">笔记</CardTitle>
-              <Button size="sm" variant="outline" onClick={() => { resetNoteForm(); setNoteDialog(true); }}>
+              <Button size="sm" variant="outline" className="press-effect" onClick={() => { resetNoteForm(); setNoteDialog(true); }}>
                 + 新笔记
               </Button>
             </div>
           </CardHeader>
           <CardContent>
             {notes.length === 0 ? (
-              <p className="text-sm text-muted-foreground">暂无笔记</p>
+              <p className="text-sm text-muted-foreground py-4 text-center">暂无笔记</p>
             ) : (
               <div className="space-y-3">
                 {notes.map(note => (
-                  <div key={note.id} className="rounded-md border p-3 space-y-1.5">
+                  <div key={note.id} className="rounded-lg border p-3 space-y-2 transition-colors">
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="font-medium text-card-foreground">{note.title || '无标题'}</p>
@@ -235,26 +242,26 @@ export default function ShowDetail() {
                           {new Date(note.createdAt).toLocaleDateString('zh-CN')} · {note.progressSnapshot}
                         </p>
                       </div>
-                      <div className="flex gap-1">
-                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEditNote(note)}>
+                      <div className="flex gap-0.5">
+                        <Button size="icon" variant="ghost" className="h-7 w-7 press-effect" onClick={() => openEditNote(note)}>
                           <Edit className="h-3 w-3" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => { deleteNote(note.id); refreshData(); }}>
+                        <Button size="icon" variant="ghost" className="h-7 w-7 press-effect" onClick={() => { deleteNote(note.id); refreshData(); }}>
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
-                    {note.content && <p className="text-sm text-foreground whitespace-pre-wrap">{note.content}</p>}
+                    {note.content && <p className="text-sm text-foreground/80 whitespace-pre-wrap leading-relaxed">{note.content}</p>}
                     {note.images && note.images.length > 0 && (
                       <div className="flex flex-wrap gap-2 pt-1">
                         {note.images.map((img, i) => (
-                          <img key={i} src={img} alt="" className="h-20 rounded-md object-cover" />
+                          <img key={i} src={img} alt="" className="h-20 rounded-lg object-cover" />
                         ))}
                       </div>
                     )}
                     {note.keywords.length > 0 && (
                       <div className="flex flex-wrap gap-1">
-                        {note.keywords.map(k => <Badge key={k} variant="outline" className="text-xs">{k}</Badge>)}
+                        {note.keywords.map(k => <Badge key={k} variant="secondary" className="text-[10px]">{k}</Badge>)}
                       </div>
                     )}
                   </div>
@@ -265,7 +272,7 @@ export default function ShowDetail() {
         </Card>
 
         {/* Calendar */}
-        <Card>
+        <Card className="animate-fade-in-up rounded-xl" style={{ animationDelay: '150ms' }}>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">日历视图</CardTitle>
           </CardHeader>
@@ -281,10 +288,10 @@ export default function ShowDetail() {
             {selectedDateNotes.length > 0 && (
               <div className="mt-3 space-y-2">
                 {selectedDateNotes.map(note => (
-                  <div key={note.id} className="rounded-md border p-2">
+                  <div key={note.id} className="rounded-lg border p-3">
                     <p className="text-sm font-medium">{note.title || '无标题'}</p>
                     <p className="text-xs text-muted-foreground">{note.progressSnapshot}</p>
-                    {note.content && <p className="text-xs mt-1">{note.content}</p>}
+                    {note.content && <p className="text-xs mt-1 text-foreground/70">{note.content}</p>}
                   </div>
                 ))}
               </div>
@@ -295,7 +302,7 @@ export default function ShowDetail() {
 
       {/* Update Progress Dialog */}
       <Dialog open={progressDialog} onOpenChange={setProgressDialog}>
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent className="sm:max-w-sm rounded-xl">
           <DialogHeader><DialogTitle>更新进度</DialogTitle></DialogHeader>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
@@ -307,13 +314,13 @@ export default function ShowDetail() {
               <Input type="number" min="1" value={newEpisode} onChange={e => setNewEpisode(e.target.value)} />
             </div>
           </div>
-          <Button onClick={handleUpdateProgress} className="w-full">确认更新</Button>
+          <Button onClick={handleUpdateProgress} className="w-full press-effect">确认更新</Button>
         </DialogContent>
       </Dialog>
 
       {/* Note Dialog */}
       <Dialog open={noteDialog} onOpenChange={setNoteDialog}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-md">
+        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-md rounded-xl">
           <DialogHeader><DialogTitle>{editingNote ? '编辑笔记' : '添加笔记'}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">
@@ -332,25 +339,24 @@ export default function ShowDetail() {
               <Label>场景亮点（逗号分隔）</Label>
               <Input value={noteHighlights} onChange={e => setNoteHighlights(e.target.value)} placeholder="如: 开头追逐戏, 结局反转" />
             </div>
-            {/* Images */}
             <div className="space-y-1.5">
               <Label>插入图片</Label>
               <div className="flex flex-wrap gap-2">
                 {noteImages.map((img, i) => (
                   <div key={i} className="relative h-16 w-16">
-                    <img src={img} alt="" className="h-full w-full rounded-md object-cover" />
+                    <img src={img} alt="" className="h-full w-full rounded-lg object-cover" />
                     <button onClick={() => setNoteImages(noteImages.filter((_, j) => j !== i))} className="absolute -right-1 -top-1 rounded-full bg-destructive p-0.5 text-destructive-foreground">
                       <X className="h-3 w-3" />
                     </button>
                   </div>
                 ))}
-                <label className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/30 text-muted-foreground hover:border-primary/50">
+                <label className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 text-muted-foreground transition-colors hover:border-primary/40 press-effect">
                   <ImagePlus className="h-5 w-5" />
                   <input type="file" accept="image/*" multiple className="hidden" onChange={handleNoteImageUpload} />
                 </label>
               </div>
             </div>
-            <Button onClick={handleSaveNote} className="w-full">保存</Button>
+            <Button onClick={handleSaveNote} className="w-full press-effect">保存</Button>
           </div>
         </DialogContent>
       </Dialog>

@@ -45,7 +45,6 @@ export default function Settings() {
   };
 
   const handleCleanup = () => {
-    // Already handled by deleteShow removing notes, just refresh tags
     const shows = getShows();
     const usedTags = new Set(shows.flatMap(s => s.tags));
     const cleaned = tags.filter(t => usedTags.has(t));
@@ -68,33 +67,33 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b bg-background/80 glass-header safe-area-pt">
         <div className="flex h-12 items-center px-4">
-          <h1 className="text-lg font-bold text-foreground">设置</h1>
+          <h1 className="text-lg font-bold tracking-tight text-foreground">设置</h1>
         </div>
       </header>
 
       <main className="mx-auto max-w-lg space-y-4 p-4">
         {/* Backup */}
-        <Card>
+        <Card className="animate-fade-in-up rounded-xl">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">数据管理</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <Button onClick={handleExport} variant="outline" className="w-full justify-start gap-2">
+          <CardContent className="space-y-2">
+            <Button onClick={handleExport} variant="outline" className="w-full justify-start gap-2 press-effect rounded-lg">
               <Download className="h-4 w-4" /> 导出备份 (JSON)
             </Button>
-            <Button onClick={handleImport} variant="outline" className="w-full justify-start gap-2">
+            <Button onClick={handleImport} variant="outline" className="w-full justify-start gap-2 press-effect rounded-lg">
               <Upload className="h-4 w-4" /> 导入备份
             </Button>
-            <Button onClick={handleCleanup} variant="outline" className="w-full justify-start gap-2 text-destructive">
+            <Button onClick={handleCleanup} variant="outline" className="w-full justify-start gap-2 text-destructive press-effect rounded-lg">
               <Trash2 className="h-4 w-4" /> 清理无用数据
             </Button>
           </CardContent>
         </Card>
 
         {/* Reminders */}
-        <Card>
+        <Card className="animate-fade-in-up rounded-xl" style={{ animationDelay: '50ms' }}>
           <CardHeader className="pb-3">
             <CardTitle className="text-base">更新提醒</CardTitle>
           </CardHeader>
@@ -107,17 +106,17 @@ export default function Settings() {
         </Card>
 
         {/* Tags */}
-        <Card>
+        <Card className="animate-fade-in-up rounded-xl" style={{ animationDelay: '100ms' }}>
           <CardHeader className="pb-3">
             <CardTitle className="text-base">标签管理</CardTitle>
           </CardHeader>
           <CardContent>
             {tags.length === 0 ? (
-              <p className="text-sm text-muted-foreground">暂无标签</p>
+              <p className="text-sm text-muted-foreground text-center py-4">暂无标签</p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {tags.map(t => (
-                  <Badge key={t} variant="secondary" className="cursor-pointer gap-1" onClick={() => handleDeleteTag(t)}>
+                  <Badge key={t} variant="secondary" className="cursor-pointer gap-1 press-effect" onClick={() => handleDeleteTag(t)}>
                     {t} <X className="h-3 w-3" />
                   </Badge>
                 ))}
