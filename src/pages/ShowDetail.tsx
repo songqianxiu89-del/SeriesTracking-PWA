@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Edit, Trash2, CheckCircle, ImagePlus, X } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, CheckCircle, ImagePlus, X, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { getShowById, updateShow, deleteShow, getNotesByShowId, addNote, updateNote, deleteNote, generateId, fileToBase64 } from '@/lib/storage';
 import { Show, Note } from '@/types/show';
 import { toast } from '@/hooks/use-toast';
+import EditShowDialog from '@/components/EditShowDialog';
 
 export default function ShowDetail() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +25,7 @@ export default function ShowDetail() {
   const [noteDialog, setNoteDialog] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [calendarDate, setCalendarDate] = useState<Date | undefined>();
+  const [editShowDialog, setEditShowDialog] = useState(false);
 
   // Progress form
   const [newSeason, setNewSeason] = useState('');
@@ -147,6 +149,9 @@ export default function ShowDetail() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="flex-1 truncate font-bold text-foreground">{show.name}</h1>
+          <Button variant="ghost" size="icon" className="press-effect rounded-full" onClick={() => setEditShowDialog(true)}>
+            <Settings className="h-4 w-4" />
+          </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" size="icon" className="press-effect rounded-full">
@@ -317,6 +322,14 @@ export default function ShowDetail() {
           <Button onClick={handleUpdateProgress} className="w-full press-effect">确认更新</Button>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Show Dialog */}
+      <EditShowDialog
+        show={show}
+        open={editShowDialog}
+        onOpenChange={setEditShowDialog}
+        onSaved={refreshData}
+      />
 
       {/* Note Dialog */}
       <Dialog open={noteDialog} onOpenChange={setNoteDialog}>
