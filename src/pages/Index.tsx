@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,7 @@ import ShowCard from '@/components/ShowCard';
 import AddShowDialog from '@/components/AddShowDialog';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [shows, setShows] = useState<Show[]>(() => getShows());
   const [addOpen, setAddOpen] = useState(false);
   const [finishedOpen, setFinishedOpen] = useState(false);
@@ -76,7 +78,7 @@ const Index = () => {
                 {finished.map(show => (
                   <div
                     key={show.id}
-                    onClick={() => window.location.href = `/show/${show.id}`}
+                    onClick={() => navigate(`/show/${show.id}`)}
                     className="flex cursor-pointer items-center justify-between rounded-xl border bg-card p-3 transition-all duration-200 press-effect"
                   >
                     <div className="flex items-center gap-3">
