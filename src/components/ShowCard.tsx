@@ -1,21 +1,53 @@
 import { Show } from '@/types/show';
 import { Badge } from '@/components/ui/badge';
-import { Film } from 'lucide-react';
+import { Film, GripVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Props {
   show: Show;
+  isDraggable?: boolean;
 }
 
-export default function ShowCard({ show }: Props) {
+export default function ShowCard({ show, isDraggable = false }: Props) {
   const navigate = useNavigate();
   const progress = `S${show.currentSeason}E${show.currentEpisode}`;
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: show.id, disabled: !isDraggable });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : undefined,
+  };
+
   return (
     <div
+      ref={setNodeRef}
+      style={style}
       onClick={() => navigate(`/show/${show.id}`)}
-      className="flex cursor-pointer gap-3 rounded-xl border bg-card p-3 transition-all duration-200 press-effect"
+      className="flex cursor-pointer gap-3 rounded-xl border bg-card p-3 transition-colors duration-200 press-effect"
     >
+      {/* Drag handle */}
+      {isDraggable && (
+        <div
+          {...attributes}
+          {...listeners}
+          onClick={(e) => e.stopPropagation()}
+          className="flex flex-shrink-0 items-center touch-none text-muted-foreground/50"
+        >
+          <GripVertical className="h-5 w-5" />
+        </div>
+      )}
       {/* Cover */}
       <div className="h-20 w-14 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
         {show.coverImage ? (
