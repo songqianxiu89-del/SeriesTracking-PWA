@@ -1,12 +1,27 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { getShows } from '@/lib/storage';
+import { getShows, saveShows } from '@/lib/storage';
 import { Show } from '@/types/show';
 import ShowCard from '@/components/ShowCard';
 import AddShowDialog from '@/components/AddShowDialog';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -22,6 +37,30 @@ const Index = () => {
   const finished = shows
     .filter(s => s.status === 'finished')
     .sort((a, b) => new Date(b.finishedAt || b.createdAt).getTime() - new Date(a.finishedAt || a.createdAt).getTime());
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  );
+
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    setShows(prev => {
+      const watchingItems = prev.filter(s => s.status === 'watching').sort((a, b) => a.sortOrder - b.sortOrder);
+      const oldIndex = watchingItems.findIndex(s => s.id === active.id);
+      const newIndex = watchingItems.findIndex(s => s.id === over.id);
+      const reordered = arrayMove(watchingItems, oldIndex, newIndex).map((s, i) => ({ ...s, sortOrder: i }));
+
+      const updated = prev.map(s => {
+        const found = reordered.find(r => r.id === s.id);
+        return found || s;
+      });
+      saveShows(updated);
+      return updated;
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -52,11 +91,20 @@ const Index = () => {
               还没有正在追的剧，点击右上角 + 添加
             </div>
           ) : (
-            <div className="space-y-2 stagger-children">
-              {watching.map(show => (
-                <ShowCard key={show.id} show={show} />
-              ))}
-            </div>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              modifiers={[restrictToVerticalAxis]}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={watching.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                <div className="space-y-2">
+                  {watching.map(show => (
+                    <ShowCard key={show.id} show={show} isDraggable />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           )}
         </section>
 
