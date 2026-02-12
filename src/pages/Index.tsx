@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, ChevronDown } from 'lucide-react';
+import { Plus, ChevronDown, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getShows, saveShows } from '@/lib/storage';
@@ -130,9 +130,15 @@ const Index = () => {
                     className="flex cursor-pointer items-center justify-between rounded-xl border bg-card p-3 transition-all duration-200 press-effect"
                   >
                     <div className="flex items-center gap-3">
-                      {show.coverImage ? (
-                        <img src={show.coverImage} alt={show.name} className="h-10 w-7 rounded-md object-cover" />
-                      ) : null}
+                      <div className="h-10 w-7 flex-shrink-0 overflow-hidden rounded-md bg-muted">
+                        {show.coverImage ? (
+                          <img src={show.coverImage} alt={show.name} className="h-full w-full object-cover" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                            <Film className="h-4 w-4" />
+                          </div>
+                        )}
+                      </div>
                       <div>
                         <p className="font-medium text-card-foreground">{show.name}</p>
                         <p className="text-xs text-muted-foreground">
