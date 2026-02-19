@@ -15,6 +15,7 @@ import { getShowById, updateShow, deleteShow, getNotesByShowId, addNote, updateN
 import { Show, Note } from '@/types/show';
 import { toast } from '@/hooks/use-toast';
 import EditShowDialog from '@/components/EditShowDialog';
+import StoredImage from '@/components/StoredImage';
 
 export default function ShowDetail() {
   const { id } = useParams<{ id: string }>();
@@ -177,7 +178,7 @@ export default function ShowDetail() {
         <Card className="animate-fade-in-up overflow-hidden rounded-xl">
           <CardContent className="flex gap-4 p-4">
             {show.coverImage ? (
-              <img src={show.coverImage} alt={show.name} className="h-28 w-20 rounded-xl object-cover shadow-sm" />
+              <StoredImage src={show.coverImage} alt={show.name} className="h-28 w-20 rounded-xl object-cover shadow-sm" />
             ) : (
               <div className="flex h-28 w-20 items-center justify-center rounded-xl bg-muted text-muted-foreground text-xs">无封面</div>
             )}
@@ -260,7 +261,7 @@ export default function ShowDetail() {
                     {note.images && note.images.length > 0 && (
                       <div className="flex flex-wrap gap-2 pt-1">
                         {note.images.map((img, i) => (
-                          <img key={i} src={img} alt="" className="h-20 rounded-lg object-cover" />
+                          <StoredImage key={i} src={img} alt="" className="h-20 rounded-lg object-cover" />
                         ))}
                       </div>
                     )}
@@ -357,7 +358,7 @@ export default function ShowDetail() {
               <div className="flex flex-wrap gap-2">
                 {noteImages.map((img, i) => (
                   <div key={i} className="relative h-16 w-16">
-                    <img src={img} alt="" className="h-full w-full rounded-lg object-cover" />
+                    <StoredImage src={img} alt="" className="h-full w-full rounded-lg object-cover" />
                     <button onClick={() => setNoteImages(noteImages.filter((_, j) => j !== i))} className="absolute -right-1 -top-1 rounded-full bg-destructive p-0.5 text-destructive-foreground">
                       <X className="h-3 w-3" />
                     </button>

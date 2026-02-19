@@ -4,6 +4,7 @@ import { Film, GripVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import StoredImage from '@/components/StoredImage';
 
 interface Props {
   show: Show;
@@ -51,7 +52,7 @@ export default function ShowCard({ show, isDraggable = false }: Props) {
       {/* Cover */}
       <div className="h-20 w-14 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
         {show.coverImage ? (
-          <img src={show.coverImage} alt={show.name} className="h-full w-full object-cover" />
+          <StoredImage src={show.coverImage} alt={show.name} className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-muted-foreground">
             <Film className="h-6 w-6" />

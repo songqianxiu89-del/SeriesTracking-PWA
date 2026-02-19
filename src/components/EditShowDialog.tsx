@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ImagePlus, X } from 'lucide-react';
+import StoredImage from '@/components/StoredImage';
 import { DEFAULT_TYPES, DEFAULT_PLATFORMS, Show } from '@/types/show';
 import { updateShow, addTags, fileToBase64 } from '@/lib/storage';
 
@@ -101,7 +102,7 @@ export default function EditShowDialog({ show, open, onOpenChange, onSaved }: Pr
             <div className="flex items-center gap-3">
               {coverImage ? (
                 <div className="relative h-20 w-14 overflow-hidden rounded-md">
-                  <img src={coverImage} alt="cover" className="h-full w-full object-cover" />
+                  <StoredImage src={coverImage} alt="cover" className="h-full w-full object-cover" />
                   <button onClick={() => setCoverImage('')} className="absolute right-0 top-0 rounded-bl bg-background/80 p-0.5">
                     <X className="h-3 w-3" />
                   </button>
