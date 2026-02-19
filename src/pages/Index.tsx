@@ -4,6 +4,7 @@ import { Plus, ChevronDown, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getShows, saveShows } from '@/lib/storage';
+import StoredImage from '@/components/StoredImage';
 import { Show } from '@/types/show';
 import ShowCard from '@/components/ShowCard';
 import AddShowDialog from '@/components/AddShowDialog';
@@ -132,7 +133,7 @@ const Index = () => {
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-7 flex-shrink-0 overflow-hidden rounded-md bg-muted">
                         {show.coverImage ? (
-                          <img src={show.coverImage} alt={show.name} className="h-full w-full object-cover" />
+                          <StoredImage src={show.coverImage} alt={show.name} className="h-full w-full object-cover" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-muted-foreground">
                             <Film className="h-4 w-4" />
